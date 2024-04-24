@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech Detection</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="words" contenteditable>
+        <p>Start Speaking...</p>
+        <!-- <p>hello</p>
+        <p>hello</p> -->
+
+    </div>
+
+
+    <script>
+        window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        const recognition = new SpeechRecognition();
+        //give output when user starts speaking rather than we he stops speaking
+        recognition.interimResults = true;
+
+
+        let p = document.createElement("p")
+        const words = document.querySelector(".words")
+        words.appendChild(p);        
+
+
+        //this event listener only works for first time when someone speaks, as listening for result
+        recognition.addEventListener("result", (e) => {
+            const transcript = Array.from(e.results)
+                .map(result => result[0])
+                .map(result => result.transcript)
+                .join()
+                
+                const poopScript = transcript.replace(/poop|poo|shit|dump/gi, '💩');
+                //add text to p element created earlier
+                p.textContent = poopScript;
+
+
+                //if user takes break then next line is added to new p
+                if (e.results[0].isFinal) {
+                    p = document.createElement('p');
+                    words.appendChild(p);
+                }    
+                
+        })
+
+
+        recognition.addEventListener("end", recognition.start)
+        recognition.start()
+
+
+
+    </script>
+</body>
+</html>
